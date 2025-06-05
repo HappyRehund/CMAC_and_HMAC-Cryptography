@@ -83,8 +83,15 @@ int main() {
 
     printf("\n\n----- SISI PENERIMA ----- \n");
     uint8_t calculated_hmac_on_received[SHA256_DIGEST_LENGTH];
-    hmac_sha256(secret_key, strlen((char*)secret_key), intercepted_message, strlen((char*)intercepted_message), calculated_hmac_on_received);
+    hmac_sha256(secret_key, strlen((char*)secret_key), intercepted_message,
+                            strlen((char*)intercepted_message), calculated_hmac_on_received);
     print_hex("HMAC yang dihitung penerima", calculated_hmac_on_received, SHA256_DIGEST_LENGTH);
+
+    if (memcmp(mitm_digest, calculated_hmac_on_received, SHA256_DIGEST_LENGTH) == 0) {
+        printf("\nVERIFIKASI: Pesan otentik dan tidak dimodifikasi (digest cocok).\n");
+    } else {
+        printf("\nVERIFIKASI: Pesan terindikasi telah dipalsukan karena digest yang berbeda.\n");
+    }
 
     return 0;
 }
